@@ -1,1 +1,0 @@
-web: gunicorn visdat1(2):app --log-file -
