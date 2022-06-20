@@ -34,12 +34,12 @@ BLUE_LIGHT = Category20[3][1]
 ORANGE = Category20[3][2]
 PURPLE = Category20[9][8]
 BROWN = Category20[11][10]
-
+# , engine='xlrd'
 
 def get_symbol_df(symbol=None):
-    df = pd.DataFrame(pd.read_excel('./GGRM2.xlsx', engine='xlrd'))[-400:]
+    df = pd.DataFrame(pd.read_csv('./GGRM.csv'))[-400:]
     df.reset_index(inplace=True)
-    df["Date"] = pd.to_datetime(df["Date"])
+    df["date"] = pd.to_datetime(df["date"])
     return df
 
 
@@ -47,30 +47,30 @@ def plot_stock_price(stock):
     p = figure(plot_width=W_PLOT, plot_height=H_PLOT, tools=TOOLS,
                title="Stock price", toolbar_location='above')
 
-    inc = stock.data['Close'] > stock.data['Open']
-    dec = stock.data['Open'] > stock.data['Close']
+    inc = stock.data['close'] > stock.data['open_price']
+    dec = stock.data['open_price'] > stock.data['close']
     view_inc = CDSView(source=stock, filters=[BooleanFilter(inc)])
     view_dec = CDSView(source=stock, filters=[BooleanFilter(dec)])
 
     # map dataframe indices to date strings and use as label overrides
     p.xaxis.major_label_overrides = {
         i + int(stock.data['index'][0]): date.strftime('%b %d') for i, date in
-        enumerate(pd.to_datetime(stock.data["Date"]))
+        enumerate(pd.to_datetime(stock.data["date"]))
     }
     p.xaxis.bounds = (stock.data['index'][0], stock.data['index'][-1])
 
-    p.segment(x0='index', x1='index', y0='Low', y1='High', color=RED, source=stock, view=view_inc)
-    p.segment(x0='index', x1='index', y0='Low', y1='High', color=GREEN, source=stock, view=view_dec)
+    p.segment(x0='index', x1='index', y0='low', y1='high', color=RED, source=stock, view=view_inc)
+    p.segment(x0='index', x1='index', y0='low', y1='high', color=GREEN, source=stock, view=view_dec)
 
-    p.vbar(x='index', width=VBAR_WIDTH, top='Open', bottom='Close', fill_color=BLUE, line_color=BLUE,
+    p.vbar(x='index', width=VBAR_WIDTH, top='open_price', bottom='close', fill_color=BLUE, line_color=BLUE,
            source=stock, view=view_inc, name="price")
-    p.vbar(x='index', width=VBAR_WIDTH, top='Open', bottom='Close', fill_color=RED, line_color=RED,
+    p.vbar(x='index', width=VBAR_WIDTH, top='open_price', bottom='close', fill_color=RED, line_color=RED,
            source=stock, view=view_dec, name="price")
 
-    p.legend.location = "top_left"
-    p.legend.border_line_alpha = 0
-    p.legend.background_fill_alpha = 0
-    p.legend.click_policy = "mute"
+    # p.legend.location = "top_left"
+    # p.legend.border_line_alpha = 0
+    # p.legend.background_fill_alpha = 0
+    # p.legend.click_policy = "mute"
 
     p.yaxis.formatter = NumeralTickFormatter(format='$ 0,0[.]000')
     p.x_range.range_padding = 0.05
@@ -83,11 +83,11 @@ def plot_stock_price(stock):
     # Choose, which glyphs are active by glyph name
     price_hover.names = ["price"]
     # Creating tooltips
-    price_hover.tooltips = [("Datetime", "@Date{%Y-%m-%d}"),
-                            ("Open", "@Open{$0,0.00}"),
-                            ("Close", "@Close{$0,0.00}"),
-                            ("Volume", "@Volume{($ 0.00 a)}")]
-    price_hover.formatters = {"Date": 'datetime'}
+    price_hover.tooltips = [("datetime", "@date{%Y-%m-%d}"),
+                            ("open_price", "@open_price{$0,0.00}"),
+                            ("close", "@close{$0,0.00}"),
+                            ("volume", "@volume{($ 0.00 a)}")]
+    price_hover.formatters = {"date": 'datetime'}
 
     #return p
 
@@ -98,13 +98,12 @@ stock = ColumnDataSource(
 symbol = 'msft'
 df = get_symbol_df(symbol)
 stock.data = stock.from_df(df)
-elements = list()
+
 
 # update_plot()
 p_stock = plot_stock_price(stock)
 
-elements.append(p_stock)
 
-curdoc().add_root(column(elements))
+
 curdoc().title = 'Bokeh stocks historical prices'
 
