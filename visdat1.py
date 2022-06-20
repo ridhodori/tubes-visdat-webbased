@@ -37,7 +37,7 @@ BROWN = Category20[11][10]
 
 
 def get_symbol_df(symbol=None):
-    df = pd.DataFrame(pd.read_excel('./GGRM2.csv'))[-400:]
+    df = pd.DataFrame(pd.read_excel('./GGRM2.xlsx'))[-400:]
     df.reset_index(inplace=True)
     df["Date"] = pd.to_datetime(df["Date"])
     return df
