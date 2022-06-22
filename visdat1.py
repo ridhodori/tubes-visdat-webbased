@@ -16,19 +16,21 @@ df.head()
 
 #sort data
 source = ColumnDataSource(df)
-filter_hs = [GroupFilter(column_name='Index', group='NYA')]
-source_hs = CDSView(source=source,filters=filter_hs)
-filter_nk = [GroupFilter(column_name='Index', group='IXIC')]
-source_nk = CDSView(source=source,filters=filter_nk)
-filter_ns = [GroupFilter(column_name='Index', group='GDAXI')]
-source_ns = CDSView(source=source,filters=filter_ns)
+filter_ny = [GroupFilter(column_name='Index', group='NYA')]
+source_ny = CDSView(source=source,filters=filter_ny)
+filter_ix = [GroupFilter(column_name='Index', group='IXIC')]
+source_ix = CDSView(source=source,filters=filter_ix)
+filter_gd = [GroupFilter(column_name='Index', group='GDAXI')]
+source_gd = CDSView(source=source,filters=filter_gd)
+filter_gs = [GroupFilter(column_name='Index', group='GSPTSE')]
+source_gs = CDSView(source=source,filters=filter_gs)
 
 #set circle info
 circle_data = {'source': source, 'size': 3, 'alpha': 0.7, 'selection_color':'black'}
-circle_hs = {'view': source_hs, 'color': 'red', 'legend_label': 'NYA'}
-circle_nk = {'view': source_nk, 'color': 'green', 'legend_label': 'IXIC'}
-circle_ns = {'view': source_ns, 'color': 'blue', 'legend_label': 'GDAXI'}
-
+circle_ny = {'view': source_ny, 'color': 'red', 'legend_label': 'NYA'}
+circle_ix = {'view': source_ix, 'color': 'green', 'legend_label': 'IXIC'}
+circle_gd = {'view': source_gd, 'color': 'blue', 'legend_label': 'GDAXI'}
+circle_gs = {'view': source_gs, 'color': 'yellow', 'legend_label': 'GSPTSE'}
 # Figure Adj_Close
 
 #create figur
@@ -39,45 +41,62 @@ fig1 = figure(title= 'Adj Close Data',x_axis_type='datetime',x_axis_label='Date'
               
 output_notebook()
 select_tools = ['pan', 'box_select', 'wheel_zoom', 'tap', 'reset']
-fig2 = figure(title= 'Volume Data',x_axis_type='datetime',x_axis_label='Date', y_axis_label= 'Volume',
+fig2 = figure(title= 'High Data',x_axis_type='datetime',x_axis_label='Date', y_axis_label= 'High',
               plot_height=500, plot_width=800, toolbar_location="right",tools=select_tools)
 
 output_notebook()
 select_tools = ['pan', 'box_select', 'wheel_zoom', 'tap', 'reset']
 fig3 = figure(title= 'Open data',x_axis_type='datetime',x_axis_label='Date', y_axis_label= 'Open',
               plot_height=500, plot_width=800, toolbar_location="right",tools=select_tools)
+
+output_notebook()
+select_tools = ['pan', 'box_select', 'wheel_zoom', 'tap', 'reset']
+fig4 = figure(title= 'Open data',x_axis_label='Low', y_axis_label= 'High',
+              plot_height=500, plot_width=800, toolbar_location="right",tools=select_tools)
 #add data circle
-fig1.circle(x='Date', y='Adj_Close', **circle_data, **circle_hs)
-fig1.circle(x='Date', y='Adj_Close', **circle_data, **circle_nk)
-fig1.circle(x='Date', y='Adj_Close', **circle_data, **circle_ns)
+fig1.circle(x='Date', y='Adj_Close', **circle_data, **circle_ny)
+fig1.circle(x='Date', y='Adj_Close', **circle_data, **circle_ix)
+fig1.circle(x='Date', y='Adj_Close', **circle_data, **circle_gd)
+fig1.circle(x='Date', y='Adj_Close', **circle_data, **circle_gs)
+fig2.circle(x='Date', y='High', **circle_data, **circle_ny)
+fig2.circle(x='Date', y='High', **circle_data, **circle_ix)
+fig2.circle(x='Date', y='High', **circle_data, **circle_gd)
+fig2.circle(x='Date', y='High', **circle_data, **circle_gs)
 
-fig2.circle(x='Date', y='Volume', **circle_data, **circle_hs)
-fig2.circle(x='Date', y='Volume', **circle_data, **circle_nk)
-fig2.circle(x='Date', y='Volume', **circle_data, **circle_ns)
+fig3.circle(x='Date', y='Open', **circle_data, **circle_ny)
+fig3.circle(x='Date', y='Open', **circle_data, **circle_ix)
+fig3.circle(x='Date', y='Open', **circle_data, **circle_gd)
+fig3.circle(x='Date', y='Open', **circle_data, **circle_gs)
 
-fig3.circle(x='Date', y='Open', **circle_data, **circle_hs)
-fig3.circle(x='Date', y='Open', **circle_data, **circle_nk)
-fig3.circle(x='Date', y='Open', **circle_data, **circle_ns)
-
+fig4.circle(x='Date', y='Open', **circle_data, **circle_ny)
+fig4.circle(x='Date', y='Open', **circle_data, **circle_ix)
+fig4.circle(x='Date', y='Open', **circle_data, **circle_gd)
+fig4.circle(x='Date', y='Open', **circle_data, **circle_gs)
 #add Hover
 tooltips= [ ('Index','@Index'),('Adj_Close', '@Adj_Close') ]
 hover_glyph = fig1.circle(x='Date', y= 'Adj_Close' , source=source,size=3, alpha=0, hover_fill_color='black', hover_alpha=0.5)
 fig1.add_tools(HoverTool(tooltips=tooltips, renderers=[hover_glyph]))
 
-tooltips= [ ('Index','@Index'),('Volume', '@Volume') ]
-hover_glyph = fig2.circle(x='Date', y= 'Volume' , source=source,size=3, alpha=0,hover_fill_color='black', hover_alpha=0.5)
+tooltips= [ ('Index','@Index'),('High', '@High') ]
+hover_glyph = fig2.circle(x='Date', y= 'High' , source=source,size=3, alpha=0,hover_fill_color='black', hover_alpha=0.5)
 fig2.add_tools(HoverTool(tooltips=tooltips, renderers=[hover_glyph]))
 
 tooltips= [ ('Index','@Index'),('Open', '@Open') ]
 hover_glyph = fig3.circle(x='Date', y= 'Open' , source=source,size=3, alpha=0,hover_fill_color='black', hover_alpha=0.5)
 fig3.add_tools(HoverTool(tooltips=tooltips, renderers=[hover_glyph]))
+
+tooltips= [ ('Index','@Index'),('Low', '@Low'), ('High', '@High')]
+hover_glyph = fig4.circle(x='High', y= 'Low' , source=source,size=3, alpha=0,hover_fill_color='black', hover_alpha=0.5)
+fig4.add_tools(HoverTool(tooltips=tooltips, renderers=[hover_glyph]))
 #hide data via legend
 fig1.legend.click_policy = 'hide'
 fig1.legend.location= 'top_right'
 fig2.legend.click_policy = 'hide'
 fig2.legend.location= 'top_right'
 fig3.legend.click_policy = 'hide'
-fig2.legend.location= 'top_right'
+fig3.legend.location= 'top_right'
+fig4.legend.click_policy = 'hide'
+fig4.legend.location= 'top_right'
 
 
 #add title
@@ -85,9 +104,10 @@ isi = "Visualisasi Data Interaktif Fluktuasi Harga Saham"
 title = Div(text=isi)
 #add widget panel and tab
 fig1_panel = Panel(child=fig1, title='Adj Close Data')
-fig2_panel = Panel(child=fig2, title='Volume Data')
+fig2_panel = Panel(child=fig2, title='High Data')
 fig3_panel = Panel(child=fig3, title='Open Data')
-tab = Tabs(tabs=[fig1_panel, fig2_panel, fig3_panel])
+fig4_panel = Panel(child=fig4, title='high vs low')
+tab = Tabs(tabs=[fig1_panel, fig2_panel, fig3_panel, fig4_panel])
 #add layout
 layout = column(title,tab)
 curdoc().theme = 'dark_minimal'
