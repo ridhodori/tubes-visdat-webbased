@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from bokeh.io import output_notebook, curdoc
 from bokeh.plotting import figure
@@ -13,7 +12,7 @@ df = pd.read_csv('./indexData.csv', parse_dates=['Date'])
 df = df.rename(columns = {'Adj Close': 'Adj_Close'}, inplace = False)
 df.head()
 
-"""#Sortir data """
+# #Sortir data
 
 #sort data
 source = ColumnDataSource(df)
@@ -35,7 +34,7 @@ circle_nk = {'view': source_nk, 'color': 'green', 'legend_label': 'IXIC'}
 
 circle_ns = {'view': source_ns, 'color': 'blue', 'legend_label': 'GDAXI'}
 
-"""#Figure Adj_Close"""
+# Figure Adj_Close
 
 #create figur
 output_notebook()
@@ -53,11 +52,11 @@ tooltips= [ ('Index','@Index'),('Adj_Close', '@Adj_Close') ]
 hover_glyph = fig1.circle(x='Date', y= 'Adj_Close' , source=source,size=3, alpha=0, hover_fill_color='black', hover_alpha=0.5)
 fig1.add_tools(HoverTool(tooltips=tooltips, renderers=[hover_glyph]))
 
-#hide data via legend(Level 3)
+#hide data via legend
 fig1.legend.click_policy = 'hide'
 fig1.legend.location= 'top_right'
 
-"""#Figure Volume"""
+# Figure Volume
 
 #create figur
 output_notebook()
@@ -75,12 +74,13 @@ tooltips= [ ('Index','@Index'),('Volume', '@Volume') ]
 hover_glyph = fig2.circle(x='Date', y= 'Volume' , source=source,size=3, alpha=0,hover_fill_color='black', hover_alpha=0.5)
 fig2.add_tools(HoverTool(tooltips=tooltips, renderers=[hover_glyph]))
 
-#hide data via legend(Level 3)
+#hide data via legend
 fig2.legend.click_policy = 'hide'
 fig2.legend.location= 'top_right'
 
 
-"""#Figure Open"""
+# Figure Open
+
 #create figur
 output_notebook()
 select_tools = ['pan', 'box_select', 'wheel_zoom', 'tap', 'reset']
@@ -97,11 +97,11 @@ tooltips= [ ('Index','@Index'),('Open', '@Open') ]
 hover_glyph = fig3.circle(x='Date', y= 'Open' , source=source,size=3, alpha=0,hover_fill_color='black', hover_alpha=0.5)
 fig3.add_tools(HoverTool(tooltips=tooltips, renderers=[hover_glyph]))
 
-#hide data via legend(Level 3)
+#hide data via legend
 fig3.legend.click_policy = 'hide'
 fig2.legend.location= 'top_right'
 
-"""#Configure Panel"""
+#Configure Panel
 
 #add title
 isi = """<h1>Visualisasi Data Interaktif Fluktuasi Harga Saham</h1>
