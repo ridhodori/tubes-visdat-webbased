@@ -5,14 +5,14 @@ from bokeh.models.widgets import Tabs, Panel
 from bokeh.models import ColumnDataSource, GroupFilter, CDSView, HoverTool, Div
 from bokeh.layouts import column, widgetbox
 import pandas as pd
-import numpy as np
+
 
 #import data
 df = pd.read_csv('./indexData.csv', parse_dates=['Date'])
 df = df.rename(columns = {'Adj Close': 'Adj_Close'}, inplace = False)
 df.head()
 
-# #Sortir data
+
 
 #sort data
 source = ColumnDataSource(df)
@@ -31,7 +31,7 @@ circle_ny = {'view': source_ny, 'color': 'red', 'legend_label': 'NYA'}
 circle_ix = {'view': source_ix, 'color': 'green', 'legend_label': 'IXIC'}
 circle_gd = {'view': source_gd, 'color': 'blue', 'legend_label': 'GDAXI'}
 circle_gs = {'view': source_gs, 'color': 'yellow', 'legend_label': 'GSPTSE'}
-# Figure Adj_Close
+
 
 #create figur
 output_notebook()
@@ -68,10 +68,10 @@ fig3.circle(x='Date', y='Open', **circle_data, **circle_ix)
 fig3.circle(x='Date', y='Open', **circle_data, **circle_gd)
 fig3.circle(x='Date', y='Open', **circle_data, **circle_gs)
 
-fig4.circle(x='Date', y='Open', **circle_data, **circle_ny)
-fig4.circle(x='Date', y='Open', **circle_data, **circle_ix)
-fig4.circle(x='Date', y='Open', **circle_data, **circle_gd)
-fig4.circle(x='Date', y='Open', **circle_data, **circle_gs)
+fig4.circle(x='Low', y='High', **circle_data, **circle_ny)
+fig4.circle(x='Low', y='High', **circle_data, **circle_ix)
+fig4.circle(x='Low', y='High', **circle_data, **circle_gd)
+fig4.circle(x='Low', y='High', **circle_data, **circle_gs)
 #add Hover
 tooltips= [ ('Index','@Index'),('Adj_Close', '@Adj_Close') ]
 hover_glyph = fig1.circle(x='Date', y= 'Adj_Close' , source=source,size=4, alpha=0, hover_fill_color='black', hover_alpha=0.5)
@@ -86,7 +86,7 @@ hover_glyph = fig3.circle(x='Date', y= 'Open' , source=source,size=4, alpha=0,ho
 fig3.add_tools(HoverTool(tooltips=tooltips, renderers=[hover_glyph]))
 
 tooltips= [ ('Index','@Index'),('Low', '@Low'), ('High', '@High')]
-hover_glyph = fig4.circle(x='High', y= 'Low' , source=source,size=4, alpha=0,hover_fill_color='black', hover_alpha=0.5)
+hover_glyph = fig4.circle(x='Low', y= 'High' , source=source,size=4, alpha=0,hover_fill_color='black', hover_alpha=0.5)
 fig4.add_tools(HoverTool(tooltips=tooltips, renderers=[hover_glyph]))
 #hide data via legend
 fig1.legend.click_policy = 'hide'
@@ -106,9 +106,9 @@ title = Div(text=isi)
 fig1_panel = Panel(child=fig1, title='Adj Close Data')
 fig2_panel = Panel(child=fig2, title='High Data')
 fig3_panel = Panel(child=fig3, title='Open Data')
-fig4_panel = Panel(child=fig4, title='high vs low')
+fig4_panel = Panel(child=fig4, title='low vs high')
 tab = Tabs(tabs=[fig1_panel, fig2_panel, fig3_panel, fig4_panel])
 #add layout
 layout = column(title,tab)
-curdoc().theme = 'dark_minimal'
+curdoc().theme = 'caliber'
 curdoc().add_root(layout)
